@@ -14,9 +14,7 @@ module.exports = new Namer({
 			const srcDir = packageInfo[SOURCE_FOLDER];
 
 			if (!srcDir) {
-				logger.warn({
-					message: `no sourceFolder section in package.json.`
-				});
+				console.log("no sourceFolder section in package.json.");
 				return null;
 			}
 
