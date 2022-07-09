@@ -2,7 +2,8 @@ const { Namer } = require("@parcel/plugin");
 const path = require("path");
 const fs = require("fs");
 
-const SOURCE_FOLDER = "sourceFolder";
+const SOURCE_FOLDER = "namerSourceFolder";
+const CONTENT_HASH = "namerContentHash"
 
 module.exports = new Namer({
 	name({ bundle, options }) {
@@ -12,6 +13,7 @@ module.exports = new Namer({
 			const packageJson = fs.readFileSync(path.join(process.cwd(), 'package.json')).toString();
 			const packageInfo = JSON.parse(packageJson);
 			const srcDir = packageInfo[SOURCE_FOLDER];
+			const hashEnabled = packageInfo[CONTENT_HASH];
 
 			if (!srcDir) {
 				console.log("no sourceFolder section in package.json.");
@@ -23,9 +25,9 @@ module.exports = new Namer({
 			let distName = basenameWithoutExtension(filePath);
 			let distPath = path.dirname(`${path.relative(path.join(process.cwd(), srcDir), filePath)}`);
 
-			// if (!bundle.needsStableName) {
-			// 	distName += "." + bundle.hashReference;
-			// }
+			if ((!bundle.needsStableName) && hashEnabled) {
+				distName += "." + bundle.hashReference;
+			}
 
 			console.log("ENTRY: " + filePath);
 
